@@ -3,7 +3,6 @@ package br.com.wellington.gestao_vagas.exceptions;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,15 +19,16 @@ public class ExceptionHandlerController {
     public ExceptionHandlerController(MessageSource message) {
         this.messageSource = message;
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public void handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<List<ErrorMessageDTO>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<ErrorMessageDTO> dto = new ArrayList<>();
 
-        e.getBindingResult().getFieldError().forEach(err) -> {
+        e.getBindingResult().getFieldErrors().forEach((err) -> {
           String message = messageSource.getMessage(err, LocaleContextHolder.getLocale());
           ErrorMessageDTO error = new ErrorMessageDTO(message, err.getField());
           dto.add(error);
-      };
+        });
 
       return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
