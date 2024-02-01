@@ -19,7 +19,8 @@ public class SecurityConfig {
                             .requestMatchers("/auth/company").permitAll()
                             ;
                     auth.anyRequest().authenticated();
-                });
+                }).addFilterBefore()
+        ;
         ;
         return http.build();
     }
