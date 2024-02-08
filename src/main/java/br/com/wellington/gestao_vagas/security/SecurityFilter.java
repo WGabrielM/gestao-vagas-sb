@@ -14,6 +14,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Unimplmented method 'doFilterInternal'");
+        String header = request.getHeader("Authorization");
+        System.out.println(header);
+        filterChain.doFilter(request, response);
     }
 }
