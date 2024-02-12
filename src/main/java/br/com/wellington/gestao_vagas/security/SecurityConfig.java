@@ -25,7 +25,7 @@ public class SecurityConfig {
                     auth.anyRequest().authenticated();
                 }).addFilterBefore(securityFilter, BasicAuthenticationFilter.class)
         ;
-        ;
+
         return http.build();
     }
 
