@@ -14,6 +14,7 @@ public class JWTProvider {
 
     @Value("${security.token.secret}")
     private String secretKey;
+
     public String validateToken(String token) {
         token = token.replace("Bearer ", "");
 

@@ -29,12 +29,16 @@ public class AuthCompanyService {
                     throw new UsernameNotFoundException("Username/password incorrect");
                 }
         );
+
+        // Check passwords is the same
         var passwordMatches = this.passwordEncoder.matches(authCompanyDTO.getPassword(), company.getPassword());
 
+        // If not equals -> Error
         if (!passwordMatches) {
             throw new AuthenticationException();
         }
 
+        // If equals -> Generate token
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         var token = JWT.create().withIssuer("javagas")
                 .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
