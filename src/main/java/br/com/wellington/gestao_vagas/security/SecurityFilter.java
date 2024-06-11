@@ -32,7 +32,10 @@ public class SecurityFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
+
             request.setAttribute("company_id", subjectToken);
+
+            //All request Spring Security will validate with the user is authenticate
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(subjectToken, null, Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(auth);
