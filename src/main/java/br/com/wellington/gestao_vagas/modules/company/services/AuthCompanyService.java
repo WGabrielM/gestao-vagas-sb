@@ -16,10 +16,13 @@ import java.time.Instant;
 
 @Service
 public class AuthCompanyService {
+
     @Value("${security.token.secret}")
     private String secretKey;
+
     @Autowired
     private CompanyRepository companyRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
