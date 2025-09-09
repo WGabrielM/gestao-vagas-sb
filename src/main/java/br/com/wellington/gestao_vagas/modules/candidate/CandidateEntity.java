@@ -27,13 +27,13 @@ public class CandidateEntity {
     private String name;
 
     @NotBlank()
-    @Pattern(regexp = "^(?!\\s*$).+", message = "O campo [username] não deve conter espaço")
+    @Pattern(regexp = "^(?!\\s*$).+", message = "The field [username] must not contain spaces")
     private String username;
 
-    @Email(message = "O campo [email] deve conter um e-mail válido")
+    @Email(message = "The field [email] must contain a valid email")
     private String email;
 
-    @Length(min = 10, max = 100, message = "A senha dee conter entre (10) e (100) caracteres")
+    @Length(min = 10, max = 100, message = "The password must contain between (10) and (100) characters")
     private String password;
     private String description;
     private String curriculum;
