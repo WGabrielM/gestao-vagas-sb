@@ -1,9 +1,9 @@
 package br.com.wellington.gestao_vagas.modules.company.controllers;
 
-import br.com.wellington.gestao_vagas.modules.company.entities.CompanyEntity;
-import br.com.wellington.gestao_vagas.modules.company.services.CreateCompanyService;
-import jakarta.validation.Valid;
+import br.com.wellington.gestao_vagas.modules.company.dto.AuthCompanyDTO;
+import br.com.wellington.gestao_vagas.modules.company.services.AuthCompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,16 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompanyController {
 
     @Autowired
-    private CreateCompanyService createCompanyService;
+    private AuthCompanyService authCompanyService;
 
     @PostMapping("/auth")
-    public ResponseEntity<Object> create(@Valid @RequestBody CompanyEntity companyEntity) {
+    public ResponseEntity<Object> auth(@RequestBody AuthCompanyDTO authCompanyDTO) {
         try {
-            var result = this.createCompanyService.execute(companyEntity);
+            var result = this.authCompanyService.execute(authCompanyDTO);
             return ResponseEntity.ok().body(result);
         }catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 

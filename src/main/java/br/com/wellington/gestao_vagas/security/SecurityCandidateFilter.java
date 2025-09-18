@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.beans.factory.annotation.Autowired;
 import br.com.wellington.gestao_vagas.providers.JWTCandidateProvider;
 import java.util.Collections;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Component
 public class SecurityCandidateFilter extends OncePerRequestFilter {
@@ -24,7 +25,8 @@ public class SecurityCandidateFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        SecurityContextHolder.getContext().setAuthentication(null);
+
+        // SecurityContextHolder.getContext().setAuthentication(null);
         String header = request.getHeader("Authorization");
 
         if (request.getRequestURI().contains("/candidate")) {
@@ -37,10 +39,18 @@ public class SecurityCandidateFilter extends OncePerRequestFilter {
                 }
 
                 request.setAttribute("candidate_id", subjectToken.getSubject());
+                var roles = subjectToken.getClaim("roles").asList(String.class);
+
+
+
+                var grants = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toString().toUpperCase()))
+                        .toList();
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        subjectToken.getSubject(), null, Collections.emptyList());
+                    subjectToken.getSubject(),null, grants);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+
             }
 
         }
