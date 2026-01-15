@@ -5,6 +5,15 @@ import br.com.wellington.gestao_vagas.modules.candidate.services.CreateCandidate
 import br.com.wellington.gestao_vagas.modules.candidate.services.ListCandidateService;
 import br.com.wellington.gestao_vagas.modules.candidate.services.ProfileCandidateUseCase;
 import br.com.wellington.gestao_vagas.modules.candidate.services.ListAllJobsByFilterService;
+import br.com.wellington.gestao_vagas.modules.company.entities.JobEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +77,16 @@ public class CandidateController {
     }
 
 
-    @GetMapping("/jobs")
+    @GetMapping("/job")
     @PreAuthorize("hasRole('CANDIDATE')")
+    @Tag(name = "Candidate Controller", description = "Candidate information")
+    @Operation(summary = "List all jobs available for candidate", description = "List all jobs available")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+        })
+    })
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Object> findJobByFilter(@RequestParam String filter) {
       try {
         var result = this.listAllJobsByFilterService.execute(filter);
