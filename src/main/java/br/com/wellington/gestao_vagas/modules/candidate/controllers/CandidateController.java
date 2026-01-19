@@ -1,6 +1,7 @@
 package br.com.wellington.gestao_vagas.modules.candidate.controllers;
 
 import br.com.wellington.gestao_vagas.modules.candidate.CandidateEntity;
+import br.com.wellington.gestao_vagas.modules.candidate.dto.ProfileCandidateResponseDTO;
 import br.com.wellington.gestao_vagas.modules.candidate.services.CreateCandidateService;
 import br.com.wellington.gestao_vagas.modules.candidate.services.ListCandidateService;
 import br.com.wellington.gestao_vagas.modules.candidate.services.ProfileCandidateUseCase;
@@ -56,16 +57,18 @@ public class CandidateController {
 
     @GetMapping("/")
     @PreAuthorize("hasRole('CANDIDATE')")
-    public ResponseEntity<Object> list() {
-        try {
-            var result = this.listCandidateService.execute();
-            return ResponseEntity.ok().body(result);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/profile")
+    @Tag(name = "Candidate Controller", description = "Candidate information")
+    @Operation(summary = "Candidate Profile", description = "Function responsible for listing all candidates")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = ProfileCandidateResponseDTO.class))
+        }),
+        @ApiResponse(responseCode = "400", content = {
+            @Content(schema = @Schema(implementation = String.class))
+        })
+      
+    })
+    @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Object> get(HttpServletRequest request) {
         var idCandidate = request.getAttribute("candidate_id");
         try {
@@ -80,7 +83,7 @@ public class CandidateController {
     @GetMapping("/job")
     @PreAuthorize("hasRole('CANDIDATE')")
     @Tag(name = "Candidate Controller", description = "Candidate information")
-    @Operation(summary = "List all jobs available for candidate", description = "List all jobs available")
+    @Operation(summary = "List all jobs available for candidate", description = "Function responsible for listing all jobs available for candidate")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
             @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
