@@ -31,6 +31,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/candidate")
+@Tag(name = "Candidate Controller", description = "Candidate information")
 public class CandidateController {
 
     @Autowired
@@ -46,6 +47,15 @@ public class CandidateController {
     private ListAllJobsByFilterService listAllJobsByFilterService;
 
     @PostMapping("/")
+    @Operation(summary = "Create a new candidate", description = "Function responsible for creating a new candidate")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CandidateEntity.class))
+        }),
+        @ApiResponse(responseCode = "400", content = {
+            @Content(schema = @Schema(implementation = String.class))
+        })
+    })
     public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
         try {
             var result = this.createCandidateService.execute(candidateEntity);
@@ -57,7 +67,6 @@ public class CandidateController {
 
     @GetMapping("/")
     @PreAuthorize("hasRole('CANDIDATE')")
-    @Tag(name = "Candidate Controller", description = "Candidate information")
     @Operation(summary = "Candidate Profile", description = "Function responsible for listing all candidates")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -82,7 +91,6 @@ public class CandidateController {
 
     @GetMapping("/job")
     @PreAuthorize("hasRole('CANDIDATE')")
-    @Tag(name = "Candidate Controller", description = "Candidate information")
     @Operation(summary = "List all jobs available for candidate", description = "Function responsible for listing all jobs available for candidate")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
