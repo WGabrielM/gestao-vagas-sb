@@ -1,4 +1,11 @@
-version: '3.9'
+
+networks:
+  gestao_vagas_network:
+    driver: bridge
+    
+volumes:
+  prometheus_data:
+    driver: local
 
 services:
   postgres:
@@ -10,3 +17,25 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=gestao_vagas
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+    - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    - prometheus_data:/prometheus
+    ports:
+    - 9090:9090
+    networks:
+    - gestao_vagas_network
+    depends_on:
+    - postgres
+    restart: always
+    command:
+    - '--config.file=/etc/prometheus/prometheus.yml'
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+    - 3000:3000
+    networks:
+    - gestao_vagas_network
